@@ -5,12 +5,12 @@ using Runtime.View;
 
 namespace Kefir.ViewModel
 {
-    public class ButtonSalaryViewModel : IDisposable
+    public class ButtonSalaryViewModelBase : ViewModelBase, IDisposable
     {
         private readonly ButtonSalaryView _view;
         private readonly ScoreModel _scoreModel;
 
-        internal ButtonSalaryViewModel(ButtonSalaryView view, ScoreModel scoreModel)
+        internal ButtonSalaryViewModelBase(ButtonSalaryView view, ScoreModel scoreModel)
         {
             _view = view;
             _scoreModel = scoreModel;
@@ -18,7 +18,7 @@ namespace Kefir.ViewModel
             _view.Button.onClick.AddListener(_scoreModel.Add);
         }
         
-        public void Dispose()
+        public new void Dispose()
         {
             _view.Button.onClick.RemoveListener(_scoreModel.Add);
         }

@@ -57,7 +57,17 @@ namespace Kefir.View.Graph
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            
+        }
+
+        public void Open()
+        {
             _image.color = _dataColor.Entered;
+        }
+        
+        public void Forget()
+        {
+            _image.color = _dataColor.Default;
         }
     }
 }

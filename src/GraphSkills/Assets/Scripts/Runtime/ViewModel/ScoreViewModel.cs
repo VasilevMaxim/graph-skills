@@ -6,7 +6,7 @@ using Runtime.View;
 
 namespace Kefir.ViewModel
 {
-    public class ScoreViewModel : IDisposable
+    public class ScoreViewModel : ViewModelBase, IDisposable
     {
         private readonly ScoreView _scoreView;
         private readonly ScoreModel _scoreModel;
@@ -15,13 +15,7 @@ namespace Kefir.ViewModel
         {
             _scoreModel = scoreModel;
             _scoreView = scoreView;
-            
-            _scoreModel.Value.Bind(_scoreView.UpdateText);
-        }
-
-        public void Dispose()
-        {
-            _scoreModel.Value.Unbind(_scoreView.UpdateText);
+            Bind(_scoreModel.Value, _scoreView.UpdateText);
         }
     }
 }

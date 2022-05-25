@@ -1,34 +1,27 @@
-﻿using System;
+using System;
 using Kefir.Model.Graph;
 using Kefir.View.Graph;
 
 namespace Kefir.ViewModel
 {
-    public class NodeViewModel : IDisposable
+    internal sealed class NodeViewModel : ViewModelBase, IDisposable
     {
-        private readonly NodeView _view;
+        private readonly NodeView _nodeView;
         private readonly NodeModel _nodeModel;
 
-        internal NodeViewModel(NodeView view, NodeModel nodeModel)
+        internal NodeViewModel(NodeView nodeView,
+                               NodeModel nodeModel)
         {
-            _view = view;
+            _nodeView = nodeView;
             _nodeModel = nodeModel;
-
-            _view.Clicked += OnClick;
-        }
-        
-        public void Dispose()
-        {
-            _view.Clicked -= OnClick;
-        }
-
-        private void OnClick()
-        {
-            bool state = _nodeModel.IsOpened.Value ? _nodeModel.TryForget() : _nodeModel.TryOpen();
-            if (state == false)
+            
+            Bind(_nodeModel.IsOpened, state =>
             {
-                
-            }
+                if (state == true) 
+                    nodeView.Open();
+                else 
+                    nodeView.Forget();
+            });
         }
     }
 }
