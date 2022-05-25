@@ -16,21 +16,28 @@ namespace Kefir.Model.Graph
         private List<INodeModelInternalVertex> _neighbors;
         public IEnumerable<INodeModelInternalVertex> Neighbors => _neighbors;
         
-        internal NodeModel()
+        private List<INodeModelInternalVertex> _visited = new(); 
+        private readonly INodeModelInternalVertex _root;
+        
+        private NodeModel()
         {
             _isOpened = new ModelItem<bool>();
             _cost = new ModelItem<int>();
+            _neighbors = new List<INodeModelInternalVertex>();
         }
         
-        internal NodeModel(int cost) : this()
+        internal NodeModel(int cost, INodeModelInternalVertex root = null) : this()
         {
+            _root = root;
             _cost.Value = cost;
+
+            _root ??= this;
         }
 
         public void SetOpened(bool state) => _isOpened.Value = state;
-        public void SetCost(int cost) =>  _cost.Value = cost;
+        public void SetCost(int cost) => _cost.Value = cost;
         
-        public void RemoveAllNeighbors() =>   _neighbors = new List<INodeModelInternalVertex>();
+        public void RemoveAllNeighbors() => _neighbors = new List<INodeModelInternalVertex>();
 
         public void RemoveNeighbour(INodeModelInternalVertex node)
         {
@@ -48,8 +55,7 @@ namespace Kefir.Model.Graph
             _neighbors.Add(node);
         }
         
-        private List<INodeModelInternalVertex> _visited = new();
-        private INodeModelInternalVertex _root;
+       
         public bool TryOpen()
         {
             if (Neighbors.All(neighbour => neighbour.IsOpened.Value == false)) return false;
@@ -59,31 +65,42 @@ namespace Kefir.Model.Graph
         
         public bool TryForget()
         {
+           
             var neighborsPast = Neighbors.ToList();
 
             ForgetLinks(this);
 
-            var isForgetAll = neighborsPast.All(neighbour => neighbour.IsCanBeForget());
+            var isForgetAll = neighborsPast.Where(neighbour => neighbour.IsOpened.Value == true)
+                                           .All(neighbour => neighbour.IsCanBeForget() == true);
             
             RestoreLinks(this, neighborsPast);
             return isForgetAll;
         }
 
-        public bool IsCanBeForget() => DFS(this);
-        
-        private bool DFS(INodeModelInternalVertex current)
+        public bool IsCanBeForget()
+        {
+            _visited = new();
+            _canRoot = false;
+            DFS(this);
+            return _canRoot;
+        }
+
+        private bool _canRoot;
+        private void DFS(INodeModelInternalVertex current)
         {
             _visited.Add(current);
+
+            if (current == _root)
+            {
+                _canRoot = true;
+                return;
+            }
             
-            if (current == _root) return true;
-            
-            foreach (var neighbour in current.Neighbors)
+            foreach (var neighbour in current.Neighbors.Where(neighbour => neighbour.IsOpened.Value == true))
             {
                 if (_visited.Contains(neighbour) == false)
                     DFS(neighbour);
             }
-            
-            return false;
         }
         
         private void ForgetLinks(INodeModelInternalVertex node)

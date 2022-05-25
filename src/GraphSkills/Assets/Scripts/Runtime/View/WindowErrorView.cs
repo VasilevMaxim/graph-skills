@@ -26,11 +26,9 @@ namespace Kefir.View
         private void Move()
         {
             var moveSequence = DOTween.Sequence();
-            moveSequence.Append(transform.DOMove(_pointOn.position, 1)
-                                         .SetEase(Ease.OutCubic));
-            moveSequence.PrependInterval(1);
-            moveSequence.Append(transform.DOMove(_pointOff.position, 1)
-                                         .SetEase(Ease.OutCubic));
+            moveSequence.Append(transform.DOMove(_pointOn.position, 0.5f));
+            moveSequence.AppendInterval(1.5f);
+            moveSequence.Append(transform.DOMove(_pointOff.position, 0.5f));
         }
     }
 }

@@ -1,16 +1,15 @@
 ﻿using System;
 using Kefir.Model.Score;
 using Kefir.View;
-using Runtime.View;
 
 namespace Kefir.ViewModel
 {
-    public class ButtonSalaryViewModelBase : ViewModelBase, IDisposable
+    public class ButtonSalaryViewModel : ViewModelBase, IDisposable
     {
         private readonly ButtonSalaryView _view;
         private readonly ScoreModel _scoreModel;
 
-        internal ButtonSalaryViewModelBase(ButtonSalaryView view, ScoreModel scoreModel)
+        internal ButtonSalaryViewModel(ButtonSalaryView view, ScoreModel scoreModel)
         {
             _view = view;
             _scoreModel = scoreModel;

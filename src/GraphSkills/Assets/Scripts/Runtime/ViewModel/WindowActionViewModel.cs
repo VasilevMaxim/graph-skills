@@ -2,53 +2,60 @@
 using System.Collections.Generic;
 using Kefir.Model.Graph;
 using Kefir.View;
-using Kefir.Сommon.Model.Bindings;
+using Kefir.View.Graph;
 
 namespace Kefir.ViewModel
 {
-    internal sealed class WindowActionViewModel : ViewModelBase
+    internal sealed class WindowActionViewModel : ViewModelBase, IDisposable
     {
-        private readonly AdvancedButton _buttonOpened;
-        private readonly AdvancedButton _buttonForget;
         private readonly WindowErrorView _windowError;
+        private readonly List<NodeView> _nodesView;
+        private readonly List<NodeModel> _nodesModel;
 
-        private readonly NodeModel _nodeModel;
-
-        internal WindowActionViewModel(AdvancedButton buttonOpened, 
-                                        AdvancedButton buttonForget,
-                                        WindowErrorView windowError,
-                                        NodeModel nodeModel)
+        internal  WindowActionViewModel(WindowActionView windowAction,
+                                       WindowErrorView windowError,
+                                       List<NodeView> nodesView,
+                                       List<NodeModel> nodesModel)
         {
-            _buttonOpened = buttonOpened;
-            _buttonForget = buttonForget;
             _windowError = windowError;
-
-            _nodeModel = nodeModel;
+            _nodesView = nodesView;
+            _nodesModel = nodesModel;
             
-            _buttonOpened.Bind(OnClick);
-            _buttonForget.Bind(OnClick2);
-        }
+            for(int i = 0; i < nodesView.Count; i++)
+            {
+                var currentModel = nodesModel[i];
+                _nodesView[i].Clicked += () =>
+                {
+                    if (currentModel.IsOpened.Value == true)
+                        OnClick2(currentModel);
+                    else
+                        OnClick(currentModel);
+                };
+            }
 
-        private void OnClick()
+            _nodesModel[0].SetOpened(true);
+        }
+        
+        private void OnClick(NodeModel nodeModel)
         {
-            if (_nodeModel.TryOpen() == false)
+            if (nodeModel.TryOpen() == false)
             {
                 _windowError.ShowErrorOpened();
                 return;
             }
             
-            _nodeModel.SetOpened(true);
+            nodeModel.SetOpened(true);
         }
 
-        private void OnClick2()
+        private void OnClick2(NodeModel nodeModel)
         {
-            if (_nodeModel.TryForget() == false)
+            if (nodeModel.TryForget() == false)
             {
                 _windowError.ShowErrorForget();
                 return;
             }
             
-            _nodeModel.SetOpened(false);
+            nodeModel.SetOpened(false);
         }
     }
 }
