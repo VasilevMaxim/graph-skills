@@ -9,5 +9,10 @@ namespace Kefir.Model.Graph
         void RemoveAllNeighbors();
         void RemoveNeighbour(INodeModelInternalVertex node);
         void AddNeighbour(INodeModelInternalVertex node);
+        
+        
+        bool TryOpen();
+        bool TryForget();
+        bool IsCanBeForget();
     }
 }

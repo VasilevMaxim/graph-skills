@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -39,6 +40,8 @@ namespace Kefir.View.Graph
     [RequireComponent(typeof(Image))]
     internal sealed class NodeView : ViewBase
     {
+        public event Action Clicked;
+        
         [SerializeField] private Image _image;
         [SerializeField] private DataNodeView _dataColor;
         
@@ -49,7 +52,7 @@ namespace Kefir.View.Graph
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            _image.color = _dataColor.Selected;
+            Clicked?.Invoke();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
