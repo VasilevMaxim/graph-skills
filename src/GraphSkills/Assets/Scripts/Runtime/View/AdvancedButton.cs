@@ -17,10 +17,15 @@ namespace Kefir.View
             if (invokeOnStart)
                 action?.Invoke();
         }
+
+        public void Unbind()
+        {
+            Button.onClick.RemoveAllListeners();
+        }
         
         public void OnDisable()
         {
-            Button.onClick.RemoveAllListeners();
+            Unbind();
         }
     }
 }

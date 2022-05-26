@@ -16,17 +16,25 @@ namespace Kefir.Model.Score
             _value = new ModelItem<int>();
         }
 
-        public void Add()
+        public void Inc()
         {
             _value.Value += 1;
         }
 
-        public void Remove(int count)
+        public void Add(int value)
         {
-            if (count < 0 || _value - count < 0)
+            if (value < 0 || int.MaxValue -_value < value)
                 throw new ArgumentException();
             
-            _value.Value = count;
+            _value.Value += value;
+        }
+        
+        public void Remove(int value)
+        {
+            if (value < 0 || _value - value < 0)
+                throw new ArgumentException();
+            
+            _value.Value -= value;
         }
     }
 }

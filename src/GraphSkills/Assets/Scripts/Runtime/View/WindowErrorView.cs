@@ -22,12 +22,18 @@ namespace Kefir.View
             Move();
             _text.text = "Невозможно забыть умение";
         }
+        
+        public void ShowErrorScore()
+        {
+            Move();
+            _text.text = "Недостаточно очков";
+        }
 
         private void Move()
         {
             var moveSequence = DOTween.Sequence();
             moveSequence.Append(transform.DOMove(_pointOn.position, 0.5f));
-            moveSequence.AppendInterval(1.5f);
+            moveSequence.AppendInterval(0.8f);
             moveSequence.Append(transform.DOMove(_pointOff.position, 0.5f));
         }
     }

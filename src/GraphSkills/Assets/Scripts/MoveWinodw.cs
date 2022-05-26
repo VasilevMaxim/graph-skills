@@ -17,7 +17,7 @@ public class MoveWinodw : MonoBehaviour
     {
         
         var endPosition = _isView ? _pointOff.position : _pointOn.position;
-        _transform.DOMove(endPosition, 1.5f).SetEase(Ease.OutCubic);
+        _transform.DOMove(endPosition, 0.8f).SetEase(Ease.OutCubic);
 
         _isView = !_isView;
         _arrow.localEulerAngles = new Vector3(_arrow.localEulerAngles.x, _arrow.localEulerAngles.y, _isView ? 0 : 180);

@@ -14,12 +14,12 @@ namespace Kefir.ViewModel
             _view = view;
             _scoreModel = scoreModel;
             
-            _view.Button.onClick.AddListener(_scoreModel.Add);
+            _view.Button.onClick.AddListener(_scoreModel.Inc);
         }
         
         public new void Dispose()
         {
-            _view.Button.onClick.RemoveListener(_scoreModel.Add);
+            _view.Button.onClick.RemoveListener(_scoreModel.Inc);
         }
     }
 }

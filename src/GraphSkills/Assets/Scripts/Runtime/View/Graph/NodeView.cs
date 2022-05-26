@@ -26,18 +26,15 @@ namespace Kefir.View.Graph
         }
     }
 
-    [RequireComponent(typeof(Image))]
+    [RequireComponent(typeof(Image), typeof(Outline))]
     internal sealed class NodeView : ViewBase, IPointerClickHandler, IPointerEnterHandler
     {
         public event Action Clicked;
+        private Outline Outline => _outline != null ? _outline : (_outline = GetComponent<Outline>());
+        private Outline _outline;
         
         [SerializeField] private Image _image;
         [SerializeField] private DataNodeView _dataColor;
-        
-        private void Start()
-        {
-            
-        }
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -58,5 +55,10 @@ namespace Kefir.View.Graph
         {
             _image.color = _dataColor.Default;
         }
+        
+        public void Choose() => Outline.enabled = true;
+        public void CancelChoose() => Outline.enabled = false;
+        
+        public void SetActiveChoose(bool state) => Outline.enabled = state;
     }
 }
