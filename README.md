@@ -1,7 +1,9 @@
 # 👽 Пояснительная записка
-[![Core](https://img.shields.io/badge/Code%20Style-CoreFX-blue)](https://github.com/dotnet/corefx/blob/master/Documentation/coding-guidelines/coding-style.md)
-![Core](https://img.shields.io/badge/IDE-Rider-blue)
-![Core](https://img.shields.io/badge/Game%20engine-Unity-blue)
+[![Core](https://img.shields.io/badge/Code%20Style-CoreFX-red)](https://github.com/dotnet/corefx/blob/master/Documentation/coding-guidelines/coding-style.md)
+![Core](https://img.shields.io/badge/IDE-Rider-red)
+![Core](https://img.shields.io/badge/Game%20engine-Unity-red)
+
+![MVVM](https://tse4.mm.bing.net/th?q=MVVM%20Logo)
 
 Билд: https://disk.yandex.ru/d/Nk366UrOp3OlIA
 
@@ -33,6 +35,6 @@
 
 ![Граф](https://clck.ru/kWL5T)
 
-Язык программирования: C#
-Использованные пакеты: Zenject, DOTWeen
-Использованный движок: Unity
+Язык программирования: **C#**   
+Использованные пакеты: **Zenject**, **DOTWeen**   
+Использованный движок: **Unity**   
