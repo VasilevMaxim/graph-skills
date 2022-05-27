@@ -4,8 +4,9 @@ using Kefir.Сommon.Model.Bindings;
 
 namespace Kefir.Model.Graph
 {
-    internal class SkillModel: VertexModel<SkillModel>, ISkillInternal
+    public class SkillModel : ISkillModel
     {
+        private readonly VertexModel<ISkillModel> _vertexModel;
         private readonly ModelItem<bool> _isOpened;
         public IReadOnlyModelItem<bool> IsOpened => _isOpened;
         
@@ -16,14 +17,17 @@ namespace Kefir.Model.Graph
         {
             _isOpened = new ModelItem<bool>();
             _cost = new ModelItem<int>();
-        }
-        
-        internal SkillModel(int cost) : this()
-        {
-            _cost.Value = cost;
+            _vertexModel = new VertexModel<ISkillModel>();
         }
 
         public void SetOpened(bool state) => _isOpened.Value = state;
         public void SetCost(int cost) => _cost.Value = cost;
+
+        public IEnumerable<ISkillModel> Neighbors => _vertexModel.Neighbors;
+        public void RemoveAllNeighbors() => _vertexModel.RemoveAllNeighbors();
+
+        public void RemoveNeighbour(ISkillModel node) => _vertexModel.RemoveNeighbour(node);
+
+        public void AddNeighbour(ISkillModel node) => _vertexModel.AddNeighbour(node);
     }
 }

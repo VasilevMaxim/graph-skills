@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace Kefir.Model.Score
 {
-    internal sealed class ScoreModel : IScore
+    public sealed class ScoreModel : IScoreModel
     {
         private readonly ModelItem<int> _value;
         public IReadOnlyModelItem<int> Value => _value;
 
-        internal ScoreModel()
+        public ScoreModel()
         {
             _value = new ModelItem<int>();
         }
@@ -29,7 +29,7 @@ namespace Kefir.Model.Score
             _value.Value += value;
         }
         
-        public void Remove(int value)
+        public void Subtract(int value)
         {
             if (value < 0 || _value - value < 0)
                 throw new ArgumentException();

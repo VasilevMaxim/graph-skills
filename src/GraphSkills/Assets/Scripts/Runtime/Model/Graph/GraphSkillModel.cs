@@ -2,22 +2,54 @@
 using System.Collections.Generic;
 using System.Linq;
 using Kefir.Сommon.Model.Bindings;
+using UnityEngine;
+using Zenject;
 
 namespace Kefir.Model.Graph
 {
-    internal sealed class GraphSkillModel
+    public sealed class LoaderFile
+    {
+        private IGraphSkillModel _graphSkillModel;
+
+        [Inject]
+        private void Init(IGraphSkillModel graphSkillModel)
+        {
+            _graphSkillModel = graphSkillModel;
+            _graphSkillModel.BuildLinks(LoadMatrix());
+        }
+        
+        private Dictionary<int, IEnumerable<int>> LoadMatrix()
+        {
+            var dictionary = new Dictionary<int, IEnumerable<int>>();
+            var text = Resources.Load<TextAsset>("matrix").text;
+            var lines = text.Split("\r\n");
+            
+            foreach (var line in lines)
+            {
+                var mainParts = line.Split(':');
+                var neighbors = mainParts[1].Split(' ');
+                dictionary.Add(int.Parse(mainParts[0]), neighbors.Select(int.Parse));
+            }
+
+            return dictionary;
+        }
+    }
+    
+    
+    public sealed class GraphSkillModel : IGraphSkillModel
     {
         public int Count => _skillsModel.Count;
-        public SkillModel Root { get; }
+        public ISkillModel Root { get; }
 
-        public SkillModel this[int index] => _skillsModel[index];
+        public ISkillModel this[int index] => _skillsModel[index];
 
-        private readonly List<SkillModel> _skillsModel;
-        private List<SkillModel> _visited = new();
+        private readonly List<ISkillModel> _skillsModel;
+        private List<ISkillModel> _visited = new();
 
         private bool _canRoot;
 
-        public GraphSkillModel(IEnumerable<SkillModel> skillsModel, SkillModel root)
+        [Inject]
+        public GraphSkillModel(IEnumerable<ISkillModel> skillsModel, [Inject(Id = "root")] ISkillModel root)
         {
             Root = root;
             _skillsModel = skillsModel.ToList();
@@ -30,14 +62,14 @@ namespace Kefir.Model.Graph
                     _skillsModel[key].AddNeighbour(_skillsModel[value]);
         }
 
-        public bool TryOpen(SkillModel skill)
+        public bool TryOpen(ISkillModel skill)
         {
             if (skill.Neighbors.All(neighbour => neighbour.IsOpened.Value == false)) return false;
             skill.SetOpened(true);
             return true;
         }
 
-        public bool TryForget(SkillModel skill)
+        public bool TryForget(ISkillModel skill)
         {
             var neighborsPast = skill.Neighbors.ToList();
 
@@ -49,8 +81,14 @@ namespace Kefir.Model.Graph
             RestoreLinks(skill, neighborsPast);
             return isForgetAll;
         }
+
+        public void ForgetAll()
+        {
+            for (int i = 1; i < _skillsModel.Count; i++)
+                _skillsModel[i].SetOpened(false);
+        }
         
-        private bool IsCanBeForget(SkillModel skill)
+        private bool IsCanBeForget(ISkillModel skill)
         {
             _visited = new();
             _canRoot = false;
@@ -59,7 +97,7 @@ namespace Kefir.Model.Graph
             return _canRoot;
         }
 
-        private void DFS(SkillModel current)
+        private void DFS(ISkillModel current)
         {
             _visited.Add(current);
 
@@ -76,7 +114,7 @@ namespace Kefir.Model.Graph
             }
         }
 
-        private void ForgetLinks(SkillModel node)
+        private void ForgetLinks(ISkillModel node)
         {
             foreach (var neighbour in node.Neighbors)
                 neighbour.RemoveNeighbour(node);
@@ -84,7 +122,7 @@ namespace Kefir.Model.Graph
             node.RemoveAllNeighbors();
         }
 
-        private void RestoreLinks(SkillModel node, IEnumerable<SkillModel> neighbors)
+        private void RestoreLinks(ISkillModel node, IEnumerable<ISkillModel> neighbors)
         {
             foreach (var neighbour in neighbors)
             {

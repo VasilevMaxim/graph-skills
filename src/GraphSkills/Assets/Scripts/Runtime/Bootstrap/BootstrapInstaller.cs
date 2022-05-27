@@ -9,73 +9,114 @@ using Kefir.ViewModel;
 using Runtime.View;
 using UnityEngine;
 using Zenject;
+using Kefir.Extensions;
 
 namespace Kefir.Bootstrap
 {
+
     internal sealed class BootstrapInstaller : MonoInstaller<BootstrapInstaller>
     {
-        [SerializeField] private List<NodeView> _nodesView;
+        [SerializeField] private List<SkillView> _nodesView;
         [SerializeField] private WindowActionView _windowAction;
         [SerializeField] private WindowErrorView _windowError;
-        [SerializeField] private WindowScoreView _windowScoreView;
-        
+
         [SerializeField] private AdvancedButton _scoreButton;
+        
+        [SerializeField] private AdvancedButton _forgetAllButton;
         
         [SerializeField] private AdvancedButton _studyButton;
         [SerializeField] private AdvancedButton _forgetButton;
-        
         [SerializeField] private AdvancedButton _arrowButton;
         
         [SerializeField] private ScoreView _scoreView;
-        
+
         private List<SkillModel> _nodeModels = new();
+        
+        private void InstallSkillModels()
+        {
+            _nodeModels = new List<SkillModel>();
+            
+            for (int i = 0; i < _nodesView.Count; i++)
+                _nodeModels.Add(new SkillModel());
+
+            CostsLoad();
+            
+            Container.Bind<IEnumerable<ISkillModel>>()
+                     .To<List<SkillModel>>()
+                     .FromInstance(_nodeModels);
+            
+            
+            Container.Bind<IEnumerable<ISkillView>>()
+                     .To<List<SkillView>>()
+                     .FromInstance(_nodesView);
+            
+            Container.Bind<ISkillModel>()
+                     .WithId("root")
+                     .To<SkillModel>()
+                     .FromInstance(_nodeModels[0]);
+        }
+
+        private void BindingButtons()
+        {
+            Container.Bind<IAdvancedButton>()
+                     .WithId("buttonStudy")
+                     .To<AdvancedButton>()
+                     .FromInstance(_studyButton);
+            
+            Container.Bind<IAdvancedButton>()
+                     .WithId("buttonForget")
+                     .To<AdvancedButton>()
+                     .FromInstance(_forgetButton);
+            
+            Container.Bind<IAdvancedButton>()
+                     .WithId("scoreButton")
+                     .To<AdvancedButton>()
+                     .FromInstance(_scoreButton);
+            
+            Container.Bind<IAdvancedButton>()
+                     .WithId("forgetAllButton")
+                     .To<AdvancedButton>()
+                     .FromInstance(_forgetAllButton);
+        }
+
+        private void CostsLoad()
+        {
+            _nodeModels.ForEach(LoadCosts(), (model, cost) => model.SetCost(cost));
+        }
+
+        private void GraphInit()
+        {
+            Container.BindInterfacesTo<GraphSkillModel>().AsSingle();
+            Container.Bind<LoaderFile>().FromNew().AsSingle().NonLazy();
+        }
         
         public override void InstallBindings()
         {
-            var scoreModel = new ScoreModel();
+            InstallSkillModels();
+            BindingButtons();
             
-            _nodeModels = new List<SkillModel>();
+            Container.BindInterfacesTo<SkillsViewModel>().AsSingle().NonLazy();
             
-            var root = new SkillModel(0);
-            _nodeModels.Add(root);
-            new SkillViewModel(_nodesView[0], root, scoreModel);
+            GraphInit();
             
-            for (int i = 1; i < _nodesView.Count; i++)
-            {
-                var model = new SkillModel(i);
-                _nodeModels.Add(model);
-                new SkillViewModel(_nodesView[i], model, scoreModel);
-            }
+            Container.BindInterfacesTo<GraphSkillViewModel>().AsSingle().NonLazy();
 
-            var graph = new GraphSkillModel(_nodeModels, root);
-            graph.BuildLinks(LoadMatrix());
-            var graphViewModel = new GraphSkillViewModel(graph, _nodesView);
-            
-            new WindowsActionViewModel(_windowAction, 
-                                _windowError, 
-                                _studyButton, 
-                                _forgetButton,
-                                graph,
-                                graphViewModel,
-                                scoreModel);
+            Container.BindInterfacesTo<WindowActionView>().FromInstance(_windowAction).AsSingle();
+            Container.BindInterfacesTo<WindowErrorView>().FromInstance(_windowError).AsSingle();
+           
+            Container.BindInterfacesTo<ScoreModel>().AsSingle();
+            Container.BindInterfacesTo<ScoreView>().FromInstance(_scoreView).AsSingle();
+            Container.BindInterfacesTo<ScoreViewModel>().AsSingle().NonLazy();
 
-            new ScoreViewModel(_scoreView, _scoreButton, scoreModel);
+            Container.BindInterfacesTo<WindowActionViewModel>().AsSingle().NonLazy();
+
+            Container.BindInterfacesTo<ForgetAllViewModel>().AsSingle().NonLazy();
         }
 
-        private Dictionary<int, IEnumerable<int>> LoadMatrix()
+        private IEnumerable<int> LoadCosts()
         {
-            var dictionary = new Dictionary<int, IEnumerable<int>>();
-            var text = File.ReadAllText("F:/matrix.txt");
-            var lines = text.Split("\r\n");
-            
-            foreach (var line in lines)
-            {
-                var mainParts = line.Split(':');
-                var neighbors = mainParts[1].Split(' ');
-                dictionary.Add(int.Parse(mainParts[0]), neighbors.Select(int.Parse));
-            }
-
-            return dictionary;
+            var text = Resources.Load<TextAsset>("costs").text;
+            return text.Split(' ').Select(int.Parse);
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Kefir.View
 {
-    internal sealed class WindowErrorView : ViewBase
+    public sealed class WindowErrorView : ViewBase, IWindowErrorView
     {
         [SerializeField] private Transform _pointOn;
         [SerializeField] private Transform _pointOff;

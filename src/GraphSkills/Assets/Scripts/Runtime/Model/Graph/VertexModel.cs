@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Kefir.Model.Graph
 {
-    internal class VertexModel<T> : IVertexModel<T> where T : class, IVertexModel<T>, new()
+    internal sealed class VertexModel<T> : IVertexModel<T>
     {
         private List<T> _neighbors;
         public IEnumerable<T> Neighbors => _neighbors;

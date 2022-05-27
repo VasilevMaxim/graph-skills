@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Runtime.View
 {
-    public class ScoreView : ViewBase
+    public class ScoreView : ViewBase, IScoreView
     {
         [SerializeField] private Text _text;
 
