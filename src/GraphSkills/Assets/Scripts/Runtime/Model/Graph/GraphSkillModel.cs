@@ -55,7 +55,7 @@ namespace Kefir.Model.Graph
             _skillsModel = skillsModel.ToList();
         }
 
-        public void BuildLinks(Dictionary<int, IEnumerable<int>> links)
+        public void BuildLinks(IDictionary<int, IEnumerable<int>> links)
         {
             foreach (var (key, values) in links)
                 foreach (var value in values)

@@ -9,7 +9,7 @@ namespace Kefir.Model.Graph
         ISkillModel Root { get; }
         
         
-        void BuildLinks(Dictionary<int, IEnumerable<int>> links);
+        void BuildLinks(IDictionary<int, IEnumerable<int>> links);
         bool TryOpen(ISkillModel skill);
         bool TryForget(ISkillModel skill);
         void ForgetAll();

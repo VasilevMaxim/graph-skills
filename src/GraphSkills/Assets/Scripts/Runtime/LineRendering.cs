@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class LineTest : MonoBehaviour
+public class LineRendering : MonoBehaviour
 {
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _pointStart;
