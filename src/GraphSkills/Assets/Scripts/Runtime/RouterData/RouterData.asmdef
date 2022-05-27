@@ -1,0 +1,17 @@
+{
+    "name": "RouterData",
+    "rootNamespace": "",
+    "references": [
+        "GUID:19d4c3c03d431544a97b3a37e4cbb2d3",
+        "GUID:6880da79758edc846a029621b5baac8c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
