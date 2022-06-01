@@ -24,15 +24,23 @@ namespace Kefir.Bootstrap
         {
             Loading();
             InstallSkillModels();
-
-            Container.BindInterfacesTo<SkillsViewModel>().AsSingle().NonLazy();
+            InstallScore();
             GraphInit();
-            Container.BindInterfacesTo<GraphSkillViewModel>().AsSingle().NonLazy();
+            InstallViewModels();
+        }
 
-            Container.BindInterfacesTo<ScoreModel>().AsSingle();
-            Container.BindInterfacesTo<ScoreViewModel>().AsSingle().NonLazy();
+        private void InstallViewModels()
+        {
+            Container.BindInterfacesTo<SkillsViewModel>().AsSingle().NonLazy();
+            Container.BindInterfacesTo<GraphSkillViewModel>().AsSingle().NonLazy();
             Container.BindInterfacesTo<WindowActionViewModel>().AsSingle().NonLazy();
             Container.BindInterfacesTo<ForgetAllViewModel>().AsSingle().NonLazy();
+        }
+        
+        private void InstallScore()
+        {
+            Container.BindInterfacesTo<ScoreModel>().AsSingle();
+            Container.BindInterfacesTo<ScoreViewModel>().AsSingle().NonLazy();
         }
         
         private void InstallSkillModels()
@@ -64,6 +72,7 @@ namespace Kefir.Bootstrap
         private void GraphInit()
         {
             Container.BindInterfacesTo<GraphSkillModel>().AsSingle();
+            Container.BindInterfacesTo<DepthFirstSearch>().AsSingle();
         }
 
         private void Loading()

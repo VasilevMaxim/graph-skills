@@ -2,7 +2,12 @@
 
 namespace Kefir.Model.Graph
 {
-    public interface IVertexModel<T>
+    public interface IVertexModel
+    {
+        
+    }
+    
+    public interface IVertexModel<T> : IVertexModel
     {
         IEnumerable<T> Neighbors { get; }
         

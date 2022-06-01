@@ -25,15 +25,28 @@ namespace Kefir.Bootstrap
 
         public override void InstallBindings()
         {
+            InstallWindows();
+            InstallScoreView();
+            BindingButtons();
+            InstallSkills();
+        }
+
+        private void InstallWindows()
+        {
             Container.BindInterfacesTo<WindowActionView>().FromInstance(_windowAction).AsSingle();
             Container.BindInterfacesTo<WindowErrorView>().FromInstance(_windowError).AsSingle();
-            Container.BindInterfacesTo<ScoreView>().FromInstance(_scoreView).AsSingle();
+        }
 
-            BindingButtons();
-            
+        private void InstallSkills()
+        {
             Container.Bind<IEnumerable<ISkillView>>()
                      .To<List<SkillView>>()
                      .FromInstance(_skillsView);
+        }
+
+        private void InstallScoreView()
+        {
+            Container.BindInterfacesTo<ScoreView>().FromInstance(_scoreView).AsSingle();
         }
         
         private void BindingButtons()
